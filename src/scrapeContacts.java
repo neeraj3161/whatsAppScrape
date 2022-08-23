@@ -46,6 +46,17 @@ public class scrapeContacts {
             searchStyle.add(data.get(i).getAttribute("style"));
             if ((data.get(i).getAttribute("style").contains("1440px"))) {
                 System.out.println("Position of the first element is " + i);
+                for (int j = 0; j < data.size(); j++) {
+                    if (data.get(j).findElement(By.className("zoWT4")).getText().contains("+91")) {
+//                    System.out.println(data.get(j).findElement(By.className("zoWT4")).getText());
+                        if (!Contacts.contains(data.get(j).findElement(By.className("zoWT4")).getText())) {
+                            Contacts.add(data.get(j).findElement(By.className("zoWT4")).getText());
+
+                        }
+
+                    }
+                }
+
                 ((JavascriptExecutor) driver).executeScript("document.querySelectorAll('.rx9719la')[" + i + "].scrollIntoView();");
             }
 
@@ -54,8 +65,6 @@ public class scrapeContacts {
 
         System.out.println("Starting loop after 3 seconds...");
         Thread.sleep(3000);
-        int j = 0;
-
 
         //calling the function
         scrollDown(number_of_elements);
@@ -64,11 +73,16 @@ public class scrapeContacts {
         for (int i = 0; i < Contacts.size(); i++) {
             System.out.println("Customer" + (i + 1) + " " + Contacts.get(i));
         }
-        System.out.println("Total contacts scrapped: "+Contacts.size());
+        System.out.println("Total contacts scrapped: " + Contacts.size());
 
         System.out.print("Do you wish to quit the browser (y/n): ");
+
+        //issue the user_input was skipped by java
+        //What is happening is that the call to nextLine() first finishes the line where the user enters the number of students. Why? Because nextInt() reads only one int and does not finish the line.
+        //So adding an extra readLine() statement would solve this problem.
+        sc.nextLine();
         String user_input = sc.nextLine();
-        if(user_input.equals("y")){
+        if (user_input.equals("y")) {
             driver.quit();
         }
 
@@ -99,7 +113,7 @@ public class scrapeContacts {
             for (int j = 0; j < data.size(); j++) {
                 if (data.get(j).findElement(By.className("zoWT4")).getText().contains("+91")) {
 //                    System.out.println(data.get(j).findElement(By.className("zoWT4")).getText());
-                    if(!Contacts.contains(data.get(j).findElement(By.className("zoWT4")).getText())){
+                    if (!Contacts.contains(data.get(j).findElement(By.className("zoWT4")).getText())) {
                         Contacts.add(data.get(j).findElement(By.className("zoWT4")).getText());
 
                     }
@@ -131,7 +145,7 @@ public class scrapeContacts {
 //                System.out.println(data.get(j).findElement(By.className("zoWT4")).getText());
 //                System.out.println();
 //                System.out.println("Total numbers extracted: " + count);
-                if(!Contacts.contains(data.get(j).findElement(By.className("zoWT4")).getText())){
+                if (!Contacts.contains(data.get(j).findElement(By.className("zoWT4")).getText())) {
                     Contacts.add(data.get(j).findElement(By.className("zoWT4")).getText());
 
                 }
@@ -140,17 +154,17 @@ public class scrapeContacts {
 
     }
 
-    private static void createCSV(ArrayList<String>Contacts) throws IOException {
+    private static void createCSV(ArrayList<String> Contacts) throws IOException {
         File file = new File("contacts.csv");
         FileWriter outputFile = new FileWriter(file);
 
         //using openCSV to create the csv file
         CSVWriter writer = new CSVWriter(outputFile);
-        String[] headers = {"Name","Numbers"};
+        String[] headers = {"Name", "Numbers"};
         writer.writeNext(headers);
 
         for (int i = 0; i < Contacts.size(); i++) {
-            String[] data = {"Customer "+(i+1), Contacts.get(i)};
+            String[] data = {"Customer " + (i + 1), Contacts.get(i)};
             writer.writeNext(data);
         }
 
