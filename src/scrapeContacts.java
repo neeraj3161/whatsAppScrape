@@ -23,6 +23,8 @@ public class scrapeContacts {
 
     public static void main(String[] args) throws InterruptedException, IOException {
         Scanner sc = new Scanner(System.in);
+        //kill chrome
+        Runtime.getRuntime().exec("taskkill /F /IM chrome.exe");
         System.out.print("Enter the number of elements: ");
         int number_of_elements = sc.nextInt();
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\neera\\Downloads\\chromedriver_win32\\chromedriver.exe");
@@ -33,6 +35,7 @@ public class scrapeContacts {
         //check how to use proxy
         chromeOptions.addArguments("--proxy-server=80.48.119.28:8080");
         driver = new ChromeDriver(chromeOptions);
+
         driver.get("https://web.whatsapp.com");
 
         //wait for 20 sec for the website to load
