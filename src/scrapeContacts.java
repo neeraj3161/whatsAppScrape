@@ -124,7 +124,6 @@ public class scrapeContacts {
                 }
             }
 
-
         }
 
         int k = number_of_elements - i;
