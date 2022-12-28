@@ -5,8 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class scrapeContacts {
 
         for (int i = 0; i < data.size(); i++) {
             searchStyle.add(data.get(i).getAttribute("style"));
-            if ((data.get(i).getAttribute("style").contains("1440px"))) {
+            if ((data.get(i).getAttribute("style").contains("1080px"))) {
                 System.out.println("Position of the first element is " + i);
                 for (int j = 0; j < data.size(); j++) {
                     if (data.get(j).findElement(By.className("zoWT4")).getText().contains("+91")) {
@@ -70,11 +70,16 @@ public class scrapeContacts {
         Thread.sleep(3000);
 
         //calling the function
-        scrollDown(number_of_elements);
+        try{
+            scrollDown(number_of_elements);
+        }catch(Exception e)
+        {
+
+        }
 
         //printing all the contacts
         for (int i = 0; i < Contacts.size(); i++) {
-            System.out.println("Customer" + (i + 1) + " " + Contacts.get(i));
+            System.out.println("A" + (i + 1) + " " + Contacts.get(i));
         }
         System.out.println("Total contacts scrapped: " + Contacts.size());
 
@@ -91,6 +96,7 @@ public class scrapeContacts {
 
         System.out.println("Creating CSV file please wait...");
         createCSV(Contacts);
+        createVCF(Contacts);
 
     }
 
@@ -100,7 +106,7 @@ public class scrapeContacts {
 //        System.out.println("Data size: "+data.size());
 
         //starting the loop after 1440px of transition
-        for (i = 1440; i < number_of_elements; i = i + 720) {
+        for (i = 1080; i < number_of_elements; i = i + 720) {
             System.out.println("i: " + i);
 
             //scrolling into view
@@ -166,10 +172,66 @@ public class scrapeContacts {
         writer.writeNext(headers);
 
         for (int i = 0; i < Contacts.size(); i++) {
-            String[] data = {"Customer " + (i + 1), Contacts.get(i)};
+            String[] data = {"A " + (i + 1), Contacts.get(i)};
             writer.writeNext(data);
         }
 
         writer.close();
+    }
+
+    private static void createVCF(ArrayList<String> Contacts) throws IOException
+    {
+        File file = new File("contacts.vcf");
+
+        FileOutputStream fop=new FileOutputStream(file);
+
+        if(file.exists()) {
+
+            int count=0;
+            for (String contact:Contacts ) {
+                count++;
+                String str = "BEGIN:VCARD\n" +
+                        "VERSION:4.0\n" +
+                        "N:Customer;"+count+";;;\n" +
+                        "FN:Customer "+count+"\n" +
+                        "ORG:Some Co.\n" +
+                        "TITLE:Customer "+count+"\n" +
+                        "TEL;TYPE=work,voice;VALUE=uri:tel:"+contact+"\n" +
+                        "TEL;TYPE=home,voice;VALUE=uri:tel:"+contact+"\n" +
+                        "EMAIL:customer@someemail.com\n" +
+                        "REV:20080424T195243Z\n" +
+                        "END:VCARD";
+
+                fop.write(str.getBytes());
+            }
+
+            System.out.println("Done creating vcf file!!");
+
+
+
+            //toRead
+
+//            BufferedReader br = null;
+//            String sCurrentLine;
+//            br = new BufferedReader(new FileReader("contact.vcf"));
+//            while ((sCurrentLine = br.readLine()) != null)
+//            {
+//                System.out.println(sCurrentLine);
+//            }
+//            //close the output stream and buffer reader
+//            fop.flush();
+//            fop.close();
+//            System.out.println("The data has been written");
+//        } else
+//            System.out.println("This file does not exist");
+//    }
+
+
+
+        }
+
+
+
+
     }
 }
